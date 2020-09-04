@@ -1,6 +1,6 @@
 Project 1 Bios 611
 ==================
-Superhero Powers Dataset
+Mushroom Classification and Generation Dataset
 ------------------------
 
 Proposal
@@ -8,46 +8,65 @@ Proposal
 
 ### Introduction
 
-For better or worse, comic book super heroes occupy a central cultural
-role. Like most works of non-polemical fiction, and perhaps all the
-more true for what one might dismissively call low art, super hero
-comics draw on the collective unconscious and thus reflect an
-unfiltered view of contemporary cultural mores. 
+Mushrooms are a fungi that are commonly used in food and sometimes for medicinal purposes, but the wide variety of characteristics across mushroom types can make distinction of species or sub-species difficult. This becomes even more challenging due to the fact that many mushroom types have evolved to have similar colors, patterns, and/or shapes, either through evolved mimicry or convergent evolution. When looking for edible mushrooms, knowing the difference between subtypes could easily be a matter of life and death, so training a lightweight network that can classify mushrooms through a few questions about its characteristics from a phone (and potentially predict the type on a phone!) could be very useful for hikers and mycologists alike. 
 
-Can we see biases related to gender in datasets which cover super
-heroes, their powers and strengths and weaknesses? In what ways does
-gender manifest itself in these fundamentally freeform fictional
-characters.
+While we're at it, maybe we'll make some new tasty varieties using a generative model and our favorite aspects of mushrooms?
 
-This project will undertake descriptive statistics of several publicly
-available data sets. We will also look at naive bayesian models which
-try to predict super hero gender on the basis of their super
-powers. Finally, we will apply state of the art tree based regression
-to the same problem.
-
-On the way we may do some clustering and a little machine learning.
+[What if we used these aspects to label an image dataset, and then did the same thing with that?](https://www.kaggle.com/maysee/mushrooms-classification-common-genuss-images) 
 
 ### Datasets
 
-The datasets we undertake to analyze are publicly available on Kaggle
-and cover super hero powers and other personal information. They can
-be downloaded [](https://www.kaggle.com/claudiodavi/superhero-set).
+The dataset we're using is found [on Kaggle and is publicly available.](https://www.kaggle.com/uciml/mushroom-classification) It consists of quite a few aspects of mushrooms and associated pictures
 
-This repo will eventually contain an analysis of
-the Superhero Powers Dataset.
+```Attribute Information: (classes: edible=e, poisonous=p)
+
+cap-shape: bell=b,conical=c,convex=x,flat=f, knobbed=k,sunken=s
+
+cap-surface: fibrous=f,grooves=g,scaly=y,smooth=s
+
+cap-color: brown=n,buff=b,cinnamon=c,gray=g,green=r,pink=p,purple=u,red=e,white=w,yellow=y
+
+bruises: bruises=t,no=f
+
+odor: almond=a,anise=l,creosote=c,fishy=y,foul=f,musty=m,none=n,pungent=p,spicy=s
+
+gill-attachment: attached=a,descending=d,free=f,notched=n
+
+gill-spacing: close=c,crowded=w,distant=d
+
+gill-size: broad=b,narrow=n
+
+gill-color: black=k,brown=n,buff=b,chocolate=h,gray=g, green=r,orange=o,pink=p,purple=u,red=e,white=w,yellow=y
+
+stalk-shape: enlarging=e,tapering=t
+
+stalk-root: bulbous=b,club=c,cup=u,equal=e,rhizomorphs=z,rooted=r,missing=?
+
+stalk-surface-above-ring: fibrous=f,scaly=y,silky=k,smooth=s
+
+stalk-surface-below-ring: fibrous=f,scaly=y,silky=k,smooth=s
+
+stalk-color-above-ring: brown=n,buff=b,cinnamon=c,gray=g,orange=o,pink=p,red=e,white=w,yellow=y
+
+stalk-color-below-ring: brown=n,buff=b,cinnamon=c,gray=g,orange=o,pink=p,red=e,white=w,yellow=y
+
+veil-type: partial=p,universal=u
+
+veil-color: brown=n,orange=o,white=w,yellow=y
+
+ring-number: none=n,one=o,two=t
+
+ring-type: cobwebby=c,evanescent=e,flaring=f,large=l,none=n,pendant=p,sheathing=s,zone=z
+
+spore-print-color: black=k,brown=n,buff=b,chocolate=h,green=r,orange=o,purple=u,white=w,yellow=y
+
+population: abundant=a,clustered=c,numerous=n,scattered=s,several=v,solitary=y
+
+habitat: grasses=g,leaves=l,meadows=m,paths=p,urban=u,waste=w,woods=d
+```
 
 ### Preliminary Figures
 
-![](assets/comparison_of_heights_and_weights.png)
-
-The above figure shows that there is a difference between the way
-weights and heights are distributed and related between real and
-fictional human beings.
-
-![](assets/gender_power_comparison_single3.png)
-
-While powers are distributed similarly between male and female heroes,
-some notable exceptions exist.
 
 Usage
 -----
