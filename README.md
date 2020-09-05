@@ -67,39 +67,22 @@ habitat: grasses=g,leaves=l,meadows=m,paths=p,urban=u,waste=w,woods=d
 
 ### Preliminary Figures
 
+As it turns out, this dataset is completely categorical, which means we have some interesting problems to deal with. First, however, let's see if our classes are balanced.
 
-Usage
------
+![](assets/class_props.png)
 
-You'll need Docker and the ability to run Docker as your current user.
+Turns out, they're pretty evenly balanced, which is good because it allows us to have confidence in a machine learning model without having to weight classification outcomes drastically. Oftentimes a dataset will perform better at categories with more samples because it has more examples to learn from, and often we try to avoid this pitfall by either having as even of a sample distribution as possible or by weighting our loss function by the proportion of samples for each class.
 
-You'll need to build the container:
+Now let's look at the categorical features, since understanding how many options there are in total will give us a sense of how expressive a neural network would have to be to accurately classify/generate from this data.
 
-    > docker build . -t project1-env
+![](assets/category_options.png)
 
-This Docker container is based on rocker/verse. To run rstudio server:
+That's a decent amount, and there are multiple ways we could approach this. Instead of using an embedding vector approach (common in NLP problems) I'm going to try and simply one-hot encode these features into a sparse, high-dimensional matrix. We end up with 193 total binary features, which is a much more useable dataset than trying to come up with each combination (or some number of arbitrary combinations) of categorical features as a separate input.
 
-    > docker run -v `pwd`:/home/rstudio -p 8787:8787\
-      -e PASSWORD=mypassword -t project1-env
-      
-Then connect to the machine on port 8787.
+Because of the format of this, it's also pretty hard to plot informative graphs about this data past what we've done. Something simple we can do is run a clustering algorithm (PCA, in this case) and see if we have groupings of easily-distinguishable data points by looking at the most important linear combinations of all features.
 
-If you are cool and you want to run this on the command line:
+- Insert preliminary PCA plot here
 
-    > docker run -v `pwd`:/home/rstudio -e PASSWORD=some_pw -it l6 sudo -H -u rstudio /bin/bash -c "cd ~/; R"
-    
-Or to run Bash:
-
-    > docker run -v `pwd`:/home/rstudio -e PASSWORD=some_pw -it l6 sudo -H -u rstudio /bin/bash -c "cd ~/; /bin/bash"
-
-Makefile
-========
-
-The Makefile is an excellent place to look to get a feel for the project.
-
-To build figures relating to the distribution of super powers over
-gender, for example, enter Bash either via the above incantation or
-with Rstudio and say:
-
-    > make figures/gender_power_comparison.png 
-    
+### TODO
+- Write custom docker image for additional R packages on top of rstudio
+- Preliminary PCA
