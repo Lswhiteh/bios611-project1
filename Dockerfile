@@ -1,3 +1,3 @@
 FROM rocker/verse
-MAINTAINER Vincent Toups <toups@email.unc.edu>
-RUN R -e "install.packages('gridExtra')"
+LABEL Logan Whitehouse <lswhiteh@unc.edu>
+RUN R -e "install.packages(c('janitor', 'mltools'))"
