@@ -3,8 +3,8 @@ library(ggplot2)
 library(janitor)
 library(mltools)
 library(data.table)
-
-
+library(reshape)
+setwd("~/bios611-project1")
 data_raw <- read_csv("source_data/mushrooms.csv", 
                       quote = '`',
                       col_types = cols(.default = 'f'))
@@ -22,7 +22,7 @@ ggplot(mushrooms, aes(x=class)) +
 ggsave('figures/class_props.png')
 
 
-unique_vals <- mushrooms %>% lapply(., nlevels) %>% melt() %>% data.frame()
+unique_vals <- mushrooms %>% lapply(., nlevels) %>% reshape::melt()
 
 ggplot(unique_vals, aes(x=L1, y=value, fill=L1)) + 
   geom_bar(stat="identity") +
@@ -36,6 +36,8 @@ ggplot(unique_vals, aes(x=L1, y=value, fill=L1)) +
 ggsave('figures/category_options.png')
 
 
+#Should separate this out into separate r script, utils maybe?
+#This is just to use in the classification model later
 shrooms_ohe <- one_hot(mushrooms)
 write.csv(shrooms_ohe, 'derived_data/shrooms_ohe.csv', row.names = FALSE)
 
