@@ -16,19 +16,25 @@ figures/odor_importance_tree.png figures/no_odor_importance_tree.png figures/con
 	Rscript basic_associations.r
 
 assets/class_props.png: figures/class_props.png
+	convert -resize 512x512 figures/class_props.png figures/class_props.png
 	cp figures/class_props.png assets/class_props.png
 
 assets/category_options.png: figures/category_options.png
+	convert -resize 512x512 figures/category_options.png figures/category_options.png
 	cp figures/category_options.png assets/category_options.png
 	
-#assets/odor_importance_tree.png: figures/odor_importance_tree.png
-#	cp figures/odor_importance_tree.png assets/odor_importance_tree.png
+assets/odor_importance_tree.png: figures/odor_importance_tree.png
+	convert -resize 512x512 figures/odor_importance_tree.png figures/odor_importance_tree.png
+	cp figures/odor_importance_tree.png assets/odor_importance_tree.png
 
-#assets/no_odor_importance_tree.png: figures/no_odor_importance_tree.png 
-#	cp figures/no_odor_importance_tree.png assets/no_odor_importance_tree.png
+assets/no_odor_importance_tree.png: figures/no_odor_importance_tree.png 
+	convert -resize 512x512 figures/no_odor_importance_tree.png figures/no_odor_importance_tree.png
+	cp figures/no_odor_importance_tree.png assets/no_odor_importance_tree.png
 	
 assets/conf_mat_odor.png: figures/conf_mat_odor.png 
+	convert -resize 512x512 figures/conf_mat_odor.png figures/conf_mat_odor.png
 	cp figures/conf_mat_odor.png assets/conf_mat_odor.png 
 
 assets/conf_mat_no_odor.png: figures/conf_mat_no_odor.png
+	convert -resize 512x512 figures/conf_mat_no_odor.png figures/conf_mat_no_odor.png
 	cp figures/conf_mat_no_odor.png assets/conf_mat_no_odor.png

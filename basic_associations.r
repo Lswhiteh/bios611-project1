@@ -26,13 +26,13 @@ test_data <- shuffled_data[test_inds, ]
 
 dec_tree_fit_odor <- rpart(class~., data=train_data, method='class')
 odor_plot <- rpart.plot(dec_tree_fit_odor, main="Initial Decision Tree")
-ggsave("figures/odor_importance_tree.png")
+png("figures/odor_importance_tree.png")
 
 no_odor_train <- subset(train_data, select=-odor)
 
 dec_tree_fit_no_odor <- rpart(class~., data=no_odor_train, method='class')
 rpart.plot(dec_tree_fit_no_odor, main="No Odor Decision Tree")
-ggsave("figures/no_odor_importance_tree.png")
+png("figures/no_odor_importance_tree.png")
 
 
 #How well does it do with odor vs without?
@@ -68,6 +68,9 @@ ggsave("figures/conf_mat_odor.png")
 
 
 confmat_no_odor <- table(test_results$true_class, test_results$no_odor_class_pred)
+print("Confusion Matrix excluding odor:")
+print(confmat_no_odor)
+
 confmat_no_odor_df <- data.frame(confmat_no_odor)
 colnames(confmat_no_odor_df) <- c("True_Class", "Predicted_Class", "Freq")
 ggplot(data =  confmat_no_odor_df, mapping = aes(x = True_Class, y = Predicted_Class)) +

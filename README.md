@@ -77,12 +77,27 @@ Now let's look at the categorical features, since understanding how many options
 
 ![](assets/category_options.png)
 
-That's a decent amount, and there are multiple ways we could approach this. Instead of using an embedding vector approach (common in NLP problems) I'm going to try and simply one-hot encode these features into a sparse, high-dimensional matrix. We end up with 193 total binary features, which is a much more useable dataset than trying to come up with each combination (or some number of arbitrary combinations) of categorical features as a separate input.
+That's a decent amount, and there are multiple ways we could approach this. The first will be a basic association test and decision tree based on whichever features are most-closely associated. This will give us a really good idea of how easy it is to predict edible/poisonous based on the features we have. Building a model that's overly complex is a waste of resources and time, so we'll try to get the simplest method for getting to an accurate prediction possible.
 
-Because of the format of this, it's also pretty hard to plot informative graphs about this data past what we've done. Something simple we can do is run a clustering algorithm (PCA, in this case) and see if we have groupings of easily-distinguishable data points by looking at the most important linear combinations of all features.
+#### Basic Association Testing
 
-- Insert preliminary PCA plot here
+First thing we'll do is determine how closely-associated all our features are. If there are some easily-distinguished relationships, that will give us an idea of how the decision tree is being pruned later on, and how much feature variance we have. Then, we'll fit a decision tree model onto our data that will let us condense those relationships into an easily-parseable tree for a figure.
 
-### TODO
-- Write custom docker image for additional R packages on top of rstudio
-- Preliminary PCA
+![](odor_importance_tree.png)
+
+Looks like the odor feature is extremely predictive, to the point where it can predict with almost perfectly high accuracy using a decision tree model:
+
+![](assets/conf_mat_odor.png)
+
+
+But there's a pretty big problem with this, we can't assume everyone can smell the same. While it's safe to assume that the stronger smelling ones are pretty easy to differentiate, visual inspection is both easier to do by humans and by machines, so let's see if we can get good predictive power without the odor feature. 
+
+![]no_odor_importance_tree.png)
+
+![](assets/conf_mat_no_odor.png)
+
+Turns out, we can! And, in a stroke of luck, it actually goes the opposite direction the odor-included tree did and overestimates how many are poisonous, without predicting any in our test set as falsely edible. In the context of health, this is an extremely important difference and we should choose this model even if it is slightly less accurate. 
+
+#### Image Preliminary Analysis
+
+Next, we'll look at the distribution of samples in our image dataset, that way we can get a feel for how weighted our classes will be. 
