@@ -92,7 +92,7 @@ Looks like the odor feature is extremely predictive, to the point where it can p
 
 But there's a pretty big problem with this, we can't assume everyone can smell the same. While it's safe to assume that the stronger smelling ones are pretty easy to differentiate, visual inspection is both easier to do by humans and by machines, so let's see if we can get good predictive power without the odor feature. 
 
-![]no_odor_importance_tree.png)
+![](no_odor_importance_tree.png)
 
 ![](assets/conf_mat_no_odor.png)
 
@@ -100,4 +100,4 @@ Turns out, we can! And, in a stroke of luck, it actually goes the opposite direc
 
 #### Image Preliminary Analysis
 
-Next, we'll look at the distribution of samples in our image dataset, that way we can get a feel for how weighted our classes will be. 
+Next, we'll look at the distribution of samples in our image dataset, that way we can get a feel for how weighted our classes will be. We will then train a basic CNN to detect edible vs inedible mushrooms by labeling the images with the appropriate class and using that as the predictive output. 
