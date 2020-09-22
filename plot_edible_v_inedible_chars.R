@@ -7,9 +7,8 @@ library(reshape)
 source("utils.r")
 
 setwd("~/bios611-project1")
-data_raw <- get_mushroom_data()
+mushrooms <- get_cleaned_mushroom_data()
 
-mushrooms <- data_raw %>% clean_names() %>% drop_na() %>% data.table()
 
 mushrooms %>% summary()
 

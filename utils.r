@@ -1,4 +1,5 @@
 library(tidyverse)
+library(janitor)
 
 get_raw_mushroom_data <- function(){
   raw_data <- read_csv("source_data/mushrooms.csv",
@@ -12,7 +13,7 @@ get_cleaned_mushroom_data <- function(){
            quote="`",
            col_types = cols(.default = "f"))
   
-  mushrooms <- data_raw %>% clean_names() %>% drop_na() %>% data.table()
+  mushrooms <- raw_data %>% clean_names() %>% drop_na() %>% data.table()
   
 }
 
