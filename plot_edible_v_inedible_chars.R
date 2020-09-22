@@ -4,10 +4,10 @@ library(janitor)
 library(mltools)
 library(data.table)
 library(reshape)
+source("utils.r")
+
 setwd("~/bios611-project1")
-data_raw <- read_csv("source_data/mushrooms.csv", 
-                      quote = '`',
-                      col_types = cols(.default = 'f'))
+data_raw <- get_mushroom_data()
 
 mushrooms <- data_raw %>% clean_names() %>% drop_na() %>% data.table()
 

@@ -3,16 +3,15 @@ library(arules)
 library(rpart)
 library(rpart.plot)
 library(ggplot2)
+source("utils.r")
 set.seed(42)
 setwd("~/bios611-project1")
 
-data_raw <- read_csv("source_data/mushrooms.csv", 
-                     quote = '`',
-                     col_types = cols(.default = 'f'))
+data_raw <- get_raw_mushroom_data()
 
 #Simple association test for most common sets
 rules <- apriori(data_raw, parameter=list(supp=0.5, conf=0.9, target="rules"))
-inspect(head(rules, by = "lift"))
+#inspect(head(rules, by = "lift"))
 
 #Decision tree, different representation of same concept
 shuffled_data <- data_raw[sample(1:nrow(data_raw)), ]
@@ -59,7 +58,7 @@ colnames(confmat_odor_df) <- c("True_Class", "Predicted_Class", "Freq")
 ggplot(data =  confmat_odor_df, mapping = aes(x = True_Class, y = Predicted_Class)) +
   geom_tile(aes(fill = Freq), colour = "white") +
   geom_text(aes(label = sprintf("%1.0f", Freq)), vjust = 1) +
-  scale_fill_gradient(low = "blue", high = "red") +
+  scale_fill_gradient() +
   theme_bw() + theme(legend.position = "none") +
   ggtitle("Confusion Matrix for Decision Tree with Odor")
 
@@ -76,7 +75,7 @@ colnames(confmat_no_odor_df) <- c("True_Class", "Predicted_Class", "Freq")
 ggplot(data =  confmat_no_odor_df, mapping = aes(x = True_Class, y = Predicted_Class)) +
   geom_tile(aes(fill = Freq), colour = "white") +
   geom_text(aes(label = sprintf("%1.0f", Freq)), vjust = 1) +
-  scale_fill_gradient(low = "blue", high = "red") +
+  scale_fill_gradient() +
   theme_bw() + theme(legend.position = "none") +
   ggtitle("Confusion Matrix for Decision Tree without Odor")
 
