@@ -1,5 +1,6 @@
 library(tidyverse)
 library(janitor)
+library(data.table)
 
 get_raw_mushroom_data <- function(){
   raw_data <- read_csv("source_data/mushrooms.csv",
