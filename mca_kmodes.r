@@ -35,6 +35,11 @@ fviz_cos2(mush_mca,
           axes=2,
           top=30)
 
+mush_kmeans <- kmeans(mush_mca$ind$coord, 2)
+
+fviz_cluster(mush_kmeans, 
+             mush_mca$ind$coord)
+
 #MCA for poisonous only
 poisonous_mca <- MCA(mushrooms[class=="p",2:ncol(mushrooms)])
 
@@ -47,6 +52,11 @@ fviz_mca_ind(poisonous_mca,
              gradient.cols = c("#00AFBB", "#E7B800", "#FC4E07"),  
              ggtheme = theme_minimal(),
              labels=FALSE)
+
+poisonous_kmeans <- kmeans(poisonous_mca$ind$coord, 3)
+
+fviz_cluster(poisonous_kmeans, 
+             poisonous_mca$ind$coord)
 
 #MCA for edible only
 edibles_mca <- MCA(mushrooms[class=="e",2:ncol(mushrooms)])
@@ -61,4 +71,8 @@ fviz_mca_ind(edibles_mca,
              ggtheme = theme_minimal(),
              labels=FALSE)
 
-cluster_results <- kmodes(mushrooms[,2:ncol(mushrooms)], i)
+edibles_kmeans <- kmeans(edibles_mca$ind$coord, 4)
+
+fviz_cluster(edibles_kmeans, 
+             edibles_mca$ind$coord, 
+             title="Edible K-means 4 Clusters")
