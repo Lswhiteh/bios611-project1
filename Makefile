@@ -1,7 +1,7 @@
 .PHONY: clean
 
 clean:
-	rm -f derived_data/*.bin
+	rm -f derived_data/*
 	rm -f figures/*.png
 
 all: assets/class_props.png\
