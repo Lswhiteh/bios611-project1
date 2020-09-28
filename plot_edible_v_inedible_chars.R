@@ -33,10 +33,3 @@ ggplot(unique_vals, aes(x=L1, y=value, fill=L1)) +
   scale_y_continuous(breaks=0:15) +
   ggtitle("Number of Options for Categorical Features")
 ggsave('figures/category_options.png')
-
-
-#Should separate this out into separate r script, utils maybe?
-#This is just to use in the classification model later
-shrooms_ohe <- one_hot(mushrooms)
-write.csv(shrooms_ohe, 'derived_data/shrooms_ohe.csv', row.names = FALSE)
-
