@@ -56,27 +56,27 @@ figures/all_samps_mca_class.png figures/all_samps_kmeans.png figures/poisonous_m
 	Rscript mca_kmeans.r
 
 assets/all_samps_mca_class.png: figures/all_samps_mca_class.png
-	convert -resize 256x256 figures/all_samps_mca_class.png figures/all_samps_mca_class.png
+	#convert -resize 256x256 figures/all_samps_mca_class.png figures/all_samps_mca_class.png
 	cp figures/all_samps_mca_class.png assets/all_samps_mca_class.png
 
 assets/all_samps_kmeans.png: figures/all_samps_kmeans.png
-	convert -resize 256x256 figures/all_samps_kmeans.png figures/all_samps_kmeans.png
+	#convert -resize 256x256 figures/all_samps_kmeans.png figures/all_samps_kmeans.png
 	cp figures/all_samps_kmeans.png assets/all_samps_kmeans.png
 
 assets/poisonous_mca_scree.png: figures/poisonous_mca_scree.png
-	convert -resize 256x256 figures/poisonous_mca_scree.png figures/poisonous_mca_scree.png
+	#convert -resize 256x256 figures/poisonous_mca_scree.png figures/poisonous_mca_scree.png
 	cp figures/poisonous_mca_scree.png assets/poisonous_mca_scree.png
 	
 assets/poisonous_mca_inds.png: figures/poisonous_mca_inds.png
-	convert -resize 256x256 figures/poisonous_mca_inds.png figures/poisonous_mca_inds.png
+	#convert -resize 256x256 figures/poisonous_mca_inds.png figures/poisonous_mca_inds.png
 	cp figures/poisonous_mca_inds.png assets/poisonous_mca_inds.png	
 
 assets/poisonous_kmeans_3clust.png: figures/poisonous_kmeans_3clust.png
-	convert -resize 256x256 figures/poisonous_kmeans_3clust.png figures/poisonous_kmeans_3clust.png
+	#convert -resize 256x256 figures/poisonous_kmeans_3clust.png figures/poisonous_kmeans_3clust.png
 	cp figures/poisonous_kmeans_3clust.png assets/poisonous_kmeans_3clust.png	
 
 assets/edible_mca_scree.png: figures/edible_mca_scree.png
-	convert -resize 256x256 figures/edible_mca_scree.png figures/edible_mca_scree.png
+	#convert -resize 256x256 figures/edible_mca_scree.png figures/edible_mca_scree.png
 	cp figures/edible_mca_scree.png assets/edible_mca_scree.png	
 
 assets/edible_mca_inds.png: figures/edible_mca_inds.png
