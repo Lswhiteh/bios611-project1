@@ -17,7 +17,8 @@ all: assets/class_props.png\
 		assets/poisonous_kmeans_3clust.png\
 		assets/edible_mca_scree.png\
 		assets/edible_mca_inds.png\
-		assets/poisonous_kmeans_4clust.png
+		assets/poisonous_kmeans_4clust.png\
+		clean
 
 # Category analysis and decision tree 
 figures/category_options.png figures/class_props.png derived_data/shrooms_ohe.csv:
