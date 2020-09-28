@@ -9,7 +9,15 @@ all: assets/class_props.png\
 		assets/odor_importance_tree.png\
 		assets/no_odor_importance_tree.png\
 		assets/conf_mat_odor.png\
-		assets/conf_mat_no_odor.png
+		assets/conf_mat_no_odor.png\
+		assets/all_samps_mca_class.png\
+		assets/all_samps_kmeans.png\
+		assets/poisonous_mca_scree.png\
+		assets/poisonous_mca_inds.png\
+		assets/poisonous_kmeans_3clust.png\
+		assets/edible_mca_scree.png\
+		assets/edible_mca_inds.png\
+		assets/poisonous_kmeans_4clust.png
 
 # Category analysis and decision tree 
 figures/category_options.png figures/class_props.png derived_data/shrooms_ohe.csv:
@@ -72,9 +80,9 @@ assets/edible_mca_scree.png: figures/edible_mca_scree.png
 	cp figures/edible_mca_scree.png assets/edible_mca_scree.png	
 
 assets/edible_mca_inds.png: figures/edible_mca_inds.png
-	convert -resize 256x256 figures/edible_mca_inds.png figures/edible_mca_inds.png
+	#convert -resize 256x256 figures/edible_mca_inds.png figures/edible_mca_inds.png
 	cp figures/edible_mca_inds.png assets/edible_mca_inds.png	
 
 assets/poisonous_kmeans_4clust.png: figures/poisonous_kmeans_4clust.png
-	convert -resize 256x256 figures/poisonous_kmeans_4clust.png figures/poisonous_kmeans_4clust.png
+	#convert -resize 256x256 figures/poisonous_kmeans_4clust.png figures/poisonous_kmeans_4clust.png
 	cp figures/poisonous_kmeans_4clust.png assets/poisonous_kmeans_4clust.png
