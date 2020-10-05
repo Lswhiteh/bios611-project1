@@ -5,10 +5,9 @@ library(mltools)
 library(data.table)
 library(reshape)
 source("utils.r")
+set.seed(42)
 
-setwd("~/bios611-project1")
 mushrooms <- get_cleaned_mushroom_data()
-
 
 mushrooms %>% summary()
 
