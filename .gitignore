@@ -1,7 +1,13 @@
 *zip
 *tar*
 *gz
-source_data/mushrooms/Mushrooms/*
+source_data/mushrooms/*
+source_data/Mushrooms/*
 *jpg
 figures/*
 Rplots.pdf
+.rstudio
+.local
+.config
+derived_data/
+.bash_history
