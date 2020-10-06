@@ -21,6 +21,8 @@ dec_tree_fit_odor <- rpart(class~., data=train_data, method='class')
 
 rpart.plot(dec_tree_fit_odor, main="Initial Decision Tree")
 
+#I have had so much trouble getting this to consistently save, I have no idea why.
+# It's the same with the other tree too. Any help?
 dev.new()
 png("figures/odor_importance_tree.png")
 

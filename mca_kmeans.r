@@ -2,10 +2,9 @@ library(klaR)
 library(FactoMineR)
 library(factoextra)
 source('utils.r')
-setwd("~/bios611-project1")
-mushrooms <- get_cleaned_mushroom_data()
+set.seed(42)
 
-#http://www.sthda.com/english/articles/31-principal-component-methods-in-r-practical-guide/114-mca-multiple-correspondence-analysis-in-r-essentials/
+mushrooms <- get_cleaned_mushroom_data()
 
 #Initial all-samples MCA + plot
 mush_mca <- MCA(mushrooms[,2:ncol(mushrooms)])
@@ -29,16 +28,6 @@ fviz_mca_ind(mush_mca,
              labels=FALSE, 
              title="All Samples Mapped to MCA Dim2 vs Dim1")
 ggsave("figures/all_samps_mca_class.png")
-
-#fviz_cos2(mush_mca,
-#          choice="var",
-#          axes=1,
-#          top=30)
-#
-#fviz_cos2(mush_mca,
-#          choice="var",
-#          axes=2,
-#          top=30)
 
 mush_kmeans <- kmeans(mush_mca$ind$coord, 2)
 
@@ -94,4 +83,4 @@ edibles_kmeans <- kmeans(edibles_mca$ind$coord, 4)
 fviz_cluster(edibles_kmeans, 
              edibles_mca$ind$coord, 
              title="Edible Samples Kmeans Clustered with 4 Clusters")
-ggsave("figures/poisonous_kmeans_4clust.png")
+ggsave("figures/edible_kmeans.png")
