@@ -39,10 +39,11 @@ plot_conf_mat <- function(df, plottitle, savepath){
   #Plots a confusion matrix using ggplot
   head(df)
   ggplot(data =  df, mapping = aes(x = True_Class, y = Predicted_Class)) +
-    geom_tile(aes(color = Freq), colour = "white") +
+    geom_tile(aes(fill = Freq), colour = "white") +
     geom_text(aes(label = sprintf("%1.0f", Freq)), vjust = 1) +
-    scale_fill_gradient(low = "#132B43",
-                        high = "#56B1F7") +
+    scale_fill_gradient2(low = "red",
+                         mid = "white",
+                         high = "blue") +
     theme_bw() + theme(legend.position = "none") +
     ggtitle(plottitle)
   
