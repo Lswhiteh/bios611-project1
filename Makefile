@@ -3,12 +3,16 @@
 clean:
 	rm -f derived_data/*
 	rm -f figures/*.png
-	rm Rplots*
+	rm *Rplots*
+
+nuke:
+	rm -f derived_data/*
+	rm -f figures/*.png
+	rm -f assets/*
+	rm *Rplots*
 
 all: assets/class_props.png\
 		assets/category_options.png\
-		assets/odor_importance_tree.png\
-		assets/no_odor_importance_tree.png\
 		assets/conf_mat_odor.png\
 		assets/conf_mat_no_odor.png\
 		assets/all_samps_mca_class.png\
@@ -18,17 +22,11 @@ all: assets/class_props.png\
 		assets/poisonous_kmeans_3clust.png\
 		assets/edible_mca_scree.png\
 		assets/edible_mca_inds.png\
-		assets/poisonous_kmeans_4clust.png\
 		Mushroom_analysis.pdf
 
 # Category analysis and decision tree 
-figures/category_options.png figures/class_props.png derived_data/shrooms_ohe.csv:
+figures/category_options.png figures/class_props.png:
 	Rscript plot_edible_v_inedible_chars.R
-
-figures/odor_importance_tree.png \
-	figures/no_odor_importance_tree.png \
-	figures/conf_mat_odor.png figures/conf_mat_no_odor.png:
-		Rscript basic_associations.r
 
 assets/class_props.png: figures/class_props.png
 	#convert -resize 512x512 figures/class_props.png figures/class_props.png
@@ -38,6 +36,14 @@ assets/category_options.png: figures/category_options.png
 	#convert -resize 512x512 figures/category_options.png figures/category_options.png
 	cp figures/category_options.png assets/category_options.png
 	
+
+#Decision tree plots
+figures/odor_importance_tree.png \
+	figures/no_odor_importance_tree.png \
+	figures/conf_mat_odor.png \
+	figures/conf_mat_no_odor.png:
+		Rscript basic_associations.r
+		
 #Something wrong with these in the R Script, cannot for the life of me figure it out
 #assets/odor_importance_tree.png: figures/odor_importance_tree.png
 	#convert -resize 512x512 figures/odor_importance_tree.png figures/odor_importance_tree.png
@@ -60,16 +66,22 @@ assets/conf_mat_no_odor.png: figures/conf_mat_no_odor.png
 figures/all_samps_mca_class.png \
 	figures/all_samps_kmeans.png \
 	figures/poisonous_mca_scree.png \
+	figures/all_samps_mca_cos2.png \
 	figures/poisonous_mca_inds.png \
 	figures/poisonous_kmeans_3clust.png \
 	figures/edible_kmeans.png \
 	figures/edible_mca_scree.png \
-	figures/edible_mca_inds.png \
-	figures/poisonous_kmeans_4clust.png:
+	figures/edible_mca_inds.png:
 		Rscript mca_kmeans.r
 
 assets/all_samps_mca_scree.png: figures/all_samps_mca_scree.png
 	cp figures/all_samps_mca_scree.png assets/all_samps_mca_scree.png
+
+assets/all_samps_mca_class.png: figures/all_samps_mca_class.png
+	cp figures/all_samps_mca_class.png assets/all_samps_mca_class.png
+
+assets/all_samps_mca_cos2.png: figures/all_samps_mca_cos2.png
+	cp figures/all_samps_mca_cos2.png assets/all_samps_mca_cos2.png
 
 assets/all_samps_kmeans.png: figures/all_samps_kmeans.png
 	cp figures/all_samps_kmeans.png assets/all_samps_kmeans.png
@@ -94,12 +106,11 @@ assets/edible_kmeans.png: figures/edible_kmeans.png
 
 Mushroom_analysis.pdf: assets/class_props.png \
 						assets/category_options.png \
-						assets/odor_importance_tree.png \
-						assets/no_odor_importance_tree.png \
 						assets/conf_mat_odor.png \
 						assets/conf_mat_no_odor.png \
 						assets/all_samps_mca_scree.png \
 						assets/all_samps_kmeans.png \
+						assets/all_samps_mca_cos2.png \
 						assets/poisonous_mca_scree.png \
 						assets/poisonous_mca_scree.png \
 						assets/poisonous_mca_inds.png \

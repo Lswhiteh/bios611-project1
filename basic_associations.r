@@ -23,9 +23,8 @@ rpart.plot(dec_tree_fit_odor, main="Initial Decision Tree")
 
 #I have had so much trouble getting this to consistently save, I have no idea why.
 # It's the same with the other tree too. Any help?
-dev.new()
-png("figures/odor_importance_tree.png")
-
+#Bad workaround for now is saving them to assets manually using rstudio
+png("assets/odor_importance_tree.png")
 
 #Same model with odor feature removed
 no_odor_train <- subset(train_data, select=-odor)
@@ -34,9 +33,7 @@ dec_tree_fit_no_odor <- rpart(class~., data=no_odor_train, method='class')
 
 rpart.plot(dec_tree_fit_no_odor, main="No Odor Decision Tree")
 
-dev.new()
-png("figures/no_odor_importance_tree.png")
-
+png("assets/no_odor_importance_tree.png")
 
 #How well does it do with odor vs without?
 test_data$prob_odor <- predict(dec_tree_fit_odor, newdata=test_data, type="prob")
