@@ -1,0 +1,1 @@
+rmarkdown::render('Mushroom_analysis.Rmd', "pdf_document")
