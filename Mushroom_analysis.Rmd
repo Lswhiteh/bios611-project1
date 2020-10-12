@@ -25,13 +25,7 @@ Information on each variable and it's associated shorthand notation can be found
 
 ## Preliminary Data Exploration
 
-The first step in describing this dataset is determining how balanced it is in terms of predictive classes. Imbalance can lead to problems down the line with accuracy and descriptiveness of a model.
-
-<center>
-![](assets/class_props.png){width=50%}
-</center>
-
-Turns out, they're pretty evenly balanced, which is good because it allows us to have confidence in a model without having to weight classification outcomes drastically. Oftentimes a dataset will perform better at categories with more samples because it has more examples to learn from, and often we try to avoid this pitfall by either having as even of a sample distribution as possible or by weighting our loss function by the proportion of samples for each class.
+The first step in describing this dataset is determining how balanced it is in terms of predictive classes. Imbalance can lead to problems down the line with accuracy and descriptiveness of a model. Preliminary plotting shows that the classes are balanced and shouldn't cause an issue in downstream analyses.
 
 Analyzing the amount of categorical options gives us an idea of the complexity of our features. 
 

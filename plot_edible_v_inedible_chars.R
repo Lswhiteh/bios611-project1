@@ -11,15 +11,6 @@ mushrooms <- get_cleaned_mushroom_data()
 
 mushrooms %>% summary()
 
-ggplot(mushrooms, aes(x=class)) + 
-  geom_bar(aes(fill=class)) +
-  scale_fill_discrete(name=NULL, 
-                      labels=c("Poisonous", "Edible")) +
-  labs(y="Count", x=NULL) +
-  ggtitle("Proportion of Poisonous vs Edible Mushrooms")
-ggsave('figures/class_props.png')
-
-
 unique_vals <- mushrooms %>% lapply(., nlevels) %>% reshape::melt()
 
 ggplot(unique_vals, aes(x=L1, y=value, fill=L1)) + 

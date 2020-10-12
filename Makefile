@@ -11,8 +11,7 @@ nuke:
 	rm -f assets/*
 	rm *Rplots*
 
-all: assets/class_props.png\
-		assets/category_options.png\
+all: assets/category_options.png\
 		assets/conf_mat_odor.png\
 		assets/conf_mat_no_odor.png\
 		assets/all_samps_mca_class.png\
@@ -25,12 +24,8 @@ all: assets/class_props.png\
 		Mushroom_analysis.pdf
 
 # Category analysis and decision tree 
-figures/category_options.png figures/class_props.png:
+figures/category_options.png:
 	Rscript plot_edible_v_inedible_chars.R
-
-assets/class_props.png: figures/class_props.png
-	#convert -resize 512x512 figures/class_props.png figures/class_props.png
-	cp figures/class_props.png assets/class_props.png
 
 assets/category_options.png: figures/category_options.png
 	#convert -resize 512x512 figures/category_options.png figures/category_options.png

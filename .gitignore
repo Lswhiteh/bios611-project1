@@ -4,7 +4,6 @@
 source_data/mushrooms/*
 source_data/Mushrooms/*
 *jpg
-figures/*
 Rplots.pdf
 .rstudio
 .local
