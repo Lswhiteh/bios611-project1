@@ -44,4 +44,4 @@ And that's it! There should be a pdf called "Mushroom_analysis.pdf" in the base 
 ---
 
 ## Homework 1
-Simply `make homework1` and the homework1.pdf will be in the base homeworks directory.
+Simply `make homework4` and the homework4.pdf will be in the base homeworks directory.

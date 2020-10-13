@@ -116,5 +116,5 @@ Mushroom_analysis.pdf: assets/class_props.png \
 						assets/edible_kmeans.png 
 	Rscript -e "rmarkdown::render('Mushroom_analysis.Rmd', 'pdf_document')"
 
-homework1:
-	Rscript -e "rmarkdown::render('homeworks/homework1.rmd', 'pdf_document')"
+homework4:
+	Rscript -e "rmarkdown::render('homeworks/homework4.rmd', 'pdf_document')"
