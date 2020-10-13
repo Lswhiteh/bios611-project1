@@ -1,0 +1,140 @@
+---
+output:
+  pdf_document: default
+  html_document: default
+---
+
+This homework data set depends on this data set:
+
+<https://www.kaggle.com/yersever/500-person-gender-height-weight-bodymassindex?select=500_Person_Gender_Height_Weight_Index.csv>
+
+Please submit this homework by creating an RMD file in your project1
+git repo. The RMD should run in the project1 docker environment. You
+may need to install the gbm package.
+
+
+# Problem 1:
+
+Build a glm in R to classifier individuals as either Male or Female
+based on their weight and height.
+
+```{r echo=F, results='hide', message=F, warning=F}
+library(tidyverse)
+library(caret)
+library(gbm)
+library(ROCR)
+library(factoextra)
+
+set.seed(42)
+```
+
+```{r}
+#Load and clean up
+person.data <- read.csv("500_Person_Gender_Height_Weight_Index.csv")
+person.data$Gender[person.data$Gender == 'Female'] = 0
+person.data$Gender[person.data$Gender == 'Male'] = 1
+person.data$Gender = as.integer(person.data$Gender)
+
+#Train/test split
+traininds <- sort(sample(nrow(person.data), nrow(person.data)*.7))
+
+train.data <- person.data[traininds,]
+test.data <- person.data[-traininds,]
+
+fit.model <- glm(Gender ~ Height + Weight, data = train.data, family=binomial)
+
+summary(fit.model)
+
+test.data$glmProb <- predict(fit.model, test.data, type="response")
+test.data <- test.data %>% mutate(glmPred = 1*(glmProb > .5) + 0)
+confusionMatrix(as.factor(test.data$Gender), as.factor(test.data$glmPred))
+```
+  
+What is the accuracy of the model?
+
+Worse than random! 0.44
+
+
+# Problem 2:
+
+Use the 'gbm' package to train a similar model. Don't worry about
+hyper parameter tuning for now. 
+
+```{r}
+
+#Train/test split
+traininds <- sort(sample(nrow(person.data), nrow(person.data)*.7))
+
+fit.model <- gbm(Gender ~ Height + Weight, data = train.data)
+
+#summary(fit.model)
+
+test.data$gbmProb <- predict(fit.model, test.data, type="response")
+test.data <- test.data %>% mutate(gbmPred = 1*(gbmProb > .5) + 0)
+caret::confusionMatrix(as.factor(test.data$Gender), as.factor(test.data$gbmPred))
+
+```
+
+What is the accuracy of the model?
+
+Also bad, 0.5
+
+
+# Problem 3
+
+Filter the data set so that it contains only 50 Male examples and all female examples. Create
+a new model for this data set. What is the F1 Score of the model? 
+
+```{r}
+males <- person.data[person.data$Gender==1,]
+male.50 <- males[sample(nrow(males), 50),]
+filt.data <- rbind(male.50, person.data[person.data$Gender==0,])
+
+#Train/test split
+traininds <- sort(sample(nrow(filt.data), nrow(filt.data)*.7))
+
+fit.model <- gbm(Gender ~ Height + Weight, data = train.data)
+
+#summary(fit.model)
+
+test.data$gbmProb2 <- predict(fit.model, test.data, type="response")
+test.data <- test.data %>% mutate(gbmPred2 = 1*(gbmProb2 > .5) + 0)
+confusionMatrix(as.factor(test.data$Gender), as.factor(test.data$gbmPred2))
+
+```
+
+
+
+# Problem 4
+
+For the model in the previous example plot an ROC curve. What does
+this ROC curve mean?
+
+```{r}
+
+pred <- prediction(test.data$gbmPred2, test.data$Gender)
+perf <- performance(pred, 'tpr', 'fpr')
+plot(perf, colorize=TRUE, main="ROC Curve for Imbalanced Set GBM")
+```
+
+
+# Problem 5
+
+Using K-Means, cluster the same data set. Can you identify the
+clusters with the known labels? Provide an interpretation of this
+result.
+
+```{r}
+
+pca.fit <- prcomp(filt.data)
+
+fviz_screeplot(pca.fit, 
+               addlabels=TRUE, 
+               title="PCA of Imbalanced Dataset")
+
+# Well... I suppose we could use just one cluster but that wouldn't be very interesting, now would it? Let's try 2
+kmeans.fit <- kmeans(filt.data, 2)
+fviz_cluster(kmeans.fit, filt.data, geom="point")
+
+```
+
