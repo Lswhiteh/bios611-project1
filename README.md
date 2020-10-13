@@ -20,12 +20,13 @@ The dataset we're using is found [on Kaggle and is publicly available.](https://
 
 To install:
 
-```
+```{bash}
 git clone https://github.com/Lswhiteh/bios611-project1
-#Build container
-source aliases.sh
-dbuild
-r
+#Build 
+docker build -f Dockerfile . --tag rcon
+
+#Run
+docker run -e PASSWORD=a -p 8787:8787 -v ~/bios611-project1:/home/rstudio/ rcon
 ```
 
 - Open a web browser to `http://localhost:8787`
@@ -33,9 +34,14 @@ r
     - Password: `<your linux user password>`
 
 In the terminal:
-```
+
+```{bash}
 make all
 ```
 
 And that's it! There should be a pdf called "Mushroom_analysis.pdf" in the base project directory with the completed writeup/figures.
 
+---
+
+## Homework 1
+Simply `make homework1` and the homework1.pdf will be in the base homeworks directory.
