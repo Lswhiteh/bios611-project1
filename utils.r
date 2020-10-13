@@ -40,7 +40,7 @@ plot_conf_mat <- function(df, plottitle, savepath){
   head(df)
   ggplot(data =  df, mapping = aes(x = True_Class, y = Predicted_Class)) +
     geom_tile(aes(fill = Freq), colour = "white") +
-    geom_text(aes(label = sprintf("%1.0f", Freq)), vjust = 1) +
+    geom_text(aes(label = sprintf("%1.0f", Freq)), vjust = 1, size=20) +
     scale_fill_gradient2(low = "red",
                          mid = "white",
                          high = "blue") +

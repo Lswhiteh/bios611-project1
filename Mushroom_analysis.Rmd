@@ -29,9 +29,7 @@ The first step in describing this dataset is determining how balanced it is in t
 
 Analyzing the amount of categorical options gives us an idea of the complexity of our features. 
 
-<center>
-![](assets/category_options.png){width=50%}
-</center>
+![](assets/category_options.png){align='center'}
 
 That's a decent amount, and there are multiple ways we could approach this. The first analysis will be an association test to see how correlated all of the variable options are with each other, and subsequently if there are any clear paths a decision tree could take or if we'll need a more complex model. Building a model that's overly complex is a waste of resources and time, so we'll try to get the simplest method first for getting to an accurate prediction possible.
 
@@ -52,9 +50,7 @@ Note: I have had many issues getting rpart.plots to work, and ocassionally they 
 
 Looks like the odor feature is extremely predictive, and this is a pretty easy problem to solve according to how small our decision tree is. To determine how well the tree can discriminate edible from poisonous samples on unknown testing data we'll plot a confusion matrix of predictions. This is a simple plot that shows the True label against the predicted label, and the diagonal is the count of how the prediction matches with the true label.
 
-<center>
-![](assets/conf_mat_odor.png){width=50%}
-</center>
+![](assets/conf_mat_odor.png){width=25%, align="center"}
 
 Drawing up a quick confusion matrix to visualize predictive accuracy shows that this decision tree is extremely accurate, though not perfect, and unfortunately tends towards predicting a mushroom as edible even when it's poisonous. Obviously this is a sub-par result when it comes to sickness/death from eating a mushroom, so adjusting the features the model is working with might get us a better predictive situation.
 
@@ -65,9 +61,7 @@ There's another large issue with using odor as the main predictor for a decision
 
 It's clear that this decision tree is more varied, and more features are being taken into consideration. This could mean it has reduced accuracy from removing a strong predictive variable, but the best way to check against that is by repeating predictions on the test set with the new model:
 
-<center>
-![](assets/conf_mat_no_odor.png){width=50%}
-</center>
+![](assets/conf_mat_no_odor.png){width=25%, align="center"}
 
 Turns out, it is still highly accurate.In a stroke of luck, it actually goes the opposite direction the odor-included tree did and overestimates how many are poisonous, without predicting any in our test set as falsely edible. In the context of health, this is an extremely important difference and we should choose this model even if it is slightly less accurate. This decision tree trained on the data without the odor feature is preferable both from a usability and prediction standpoint, and will be the chosen model going forward.
 
@@ -83,17 +77,17 @@ Multiple correspondence analysis (MCA) can be viewed as the counterpart to PCA f
 
 The actual application of MCA in R is straightforward, the class labels were removed from the dataset and the resulting data can be visualized below as a plot of the top two variance-explaining dimensions against each other with the class labels as the color to see if there is any obvious delineation between the two classes. The COS2 distance is a measurement of importance for principle components for observed variables, and can give an indication as to how strongly the samples are affecting the lower-dimensional spaces.
 
-![](assets/all_samps_mca_class.png){width=50%} ![](assets/all_samps_mca_cos2.png){width=50%}
+![](assets/all_samps_mca_class.png){width=50%, align="center"} ![](assets/all_samps_mca_cos2.png){width=50%, align="center"}
 There is a little bit of separation, especially with the sub-groupings of poisonous samples, buut there is also quite a bit of mixing as well. At this point K-means clustering will give us an idea if they're easily separable, and mabye inform us of the structure of the data. The amount of clusters to use is sometimes determined by a scree plot of how much variance each dimension explains of the MCA, as shown below for this data.
 
 <center>
-![](assets/all_samps_mca_scree.png){width=50%}
+![](assets/all_samps_mca_scree.png){width=75%, align="center"}
 </center>
 
 Typically one would look for a sharp decrease in variance, and choose the number of dimensions before the drop as the number of clusters. We don't have such drastic differences here, which could indicate something about the quality of this MCA process, but will make it hard to choose the number of clusters. For now 2 clusters are selected to see if there's any obvious separation:
 
 <center>
-![](assets/all_samps_kmeans.png){width=50%}
+![](assets/all_samps_kmeans.png){width=75%, align="center"}
 </center>
 
 Again, we see what look to be some pretty distinct sub-clusters, but overall they're not extremely separable. 
@@ -101,24 +95,24 @@ Again, we see what look to be some pretty distinct sub-clusters, but overall the
 This approach can be taken further to analyze deeper structure, such as there being different clustering behaviors if only the edible or poisonous samples are analyzed? The same procedure as above can be repeated for such a question.
 
 #### Edible Samples
-![](assets/edible_mca_inds.png){width=40%} ![](assets/edible_mca_scree.png){width=40%}
+![](assets/edible_mca_inds.png){width=50%, align="center"} ![](assets/edible_mca_scree.png){width=50%, align="center"}
 
 Using the scree plot for edible samples it would seem 4 clusters are appropriate but the quality is less than stellar, as seen below. 
 
 <center>
-![](assets/edible_kmeans.png){width=50%}
+![](assets/edible_kmeans.png){width=50%, align="center"}
 </center>
 
 #### Poisonous Samples
 Interestingly, for the poisonous samples, most of them lay along one dimension with a few very highly Dimension 2-associated samples.
 
 <center>
-![](assets/poisonous_mca_inds.png){width=50%}
+![](assets/poisonous_mca_inds.png){width=75%, align="center"}
 </center>
 There's a large variance drop after 3 dimensions, so this was chosen as the K for k-means. The resulting clustering is highly differentiated, the best of all of them. Without more information about the nature of the poisonous samples however, it's difficult to fully understand what these clusters could represent. 
 
 <center>
-![](assets/poisonous_kmeans_3clust.png){width=50%}
+![](assets/poisonous_kmeans_3clust.png){width=75%, align="center"}
 </center>
 
 All things considered the ability to create a very lightweight supervised model using only categorical variables is great, but in terms of structures within the data MCA analysis and k-means was not sufficient to find anything interesting aside from some sub-groups within the poisonous mushrooms. It's not clear whether there just is no underlying structure or if this would require a stronger analysis, but these basic methods found nothing of interest. 
