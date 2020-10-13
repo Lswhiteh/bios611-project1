@@ -59,6 +59,7 @@ assets/conf_mat_no_odor.png: figures/conf_mat_no_odor.png
 # MCA and Kmeans analysis
 #Is there a better way to define this large of a target?
 figures/all_samps_mca_class.png \
+	figures/all_samps_mca_scree.png \
 	figures/all_samps_kmeans.png \
 	figures/poisonous_mca_scree.png \
 	figures/all_samps_mca_cos2.png \
@@ -113,4 +114,7 @@ Mushroom_analysis.pdf: assets/class_props.png \
 						assets/edible_mca_scree.png \
 						assets/edible_mca_inds.png \
 						assets/edible_kmeans.png 
-	Rscript rend_pdf.r
+	Rscript -e "rmarkdown::render('Mushroom_analysis.Rmd', 'pdf_document')"
+
+homework1:
+	Rscript -e "rmarkdown::render('homeworks/homework1.rmd', 'pdf_document')"
