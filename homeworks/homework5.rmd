@@ -1,0 +1,123 @@
+# Table of Contents
+
+1.  [Q1](#org0f04966)
+2.  [Q2](#org6a81eeb)
+3.  [Q3](#org51a4194)
+4.  [Q4](#org61f5d14)
+5.  [Q5](#orgb73f6b4)
+6.  [Q6](#org870b507)
+7.  [Q7](#orge0cfd1d)
+
+
+<a id="org0f04966"></a>
+
+# Q1
+
+With the data set given here:
+
+<https://raw.githubusercontent.com/Vincent-Toups/bios611-project1/master/source_data/datasets_26073_33239_weight-height.csv>
+
+Repeat your GBM model. Contrast your results with the results for the
+previous exercise.
+
+```{r}
+library(tidyverse)
+library(caret)
+library(gbm)
+library(ROCR)
+library(factoextra)
+library(ggplot2)
+set.seed(42)
+```
+
+```{r}
+#Load and clean up
+person.data <- read.csv("datasets_26073_33239_weight-height.csv")
+person.data$Gender[person.data$Gender == 'Female'] = 0
+person.data$Gender[person.data$Gender == 'Male'] = 1
+person.data$Gender = as.integer(person.data$Gender)
+
+#Train/test split
+traininds <- sort(sample(nrow(person.data), nrow(person.data)*.7))
+
+train.data <- person.data[traininds,]
+test.data <- person.data[-traininds,]
+
+#Train/test split
+traininds <- sort(sample(nrow(person.data), nrow(person.data)*.7))
+
+fit.model <- gbm(Gender ~ Height + Weight, data = train.data)
+
+#summary(fit.model)
+
+test.data$gbmProb <- predict(fit.model, test.data, type="response")
+test.data <- test.data %>% mutate(gbmPred = 1*(gbmProb > .5) + 0)
+caret::confusionMatrix(as.factor(test.data$Gender), as.factor(test.data$gbmPred))
+
+```
+
+
+Compared to the previous dataset, this is obviously learning some characteristics and has good predictive power. Sitting around 92% is pretty good, and it's clear there are trends in the data.
+
+<a id="org6a81eeb"></a>
+
+
+# Q2
+
+Using the data set available here:
+
+<https://github.com/Vincent-Toups/bios611-project1/blob/master/source_data/datasets_38396_60978_charcters_stats.csv>
+
+1.  Examine the dataset for any irregularities. Make the case for
+    filtering out a subset of rows (or for not doing so).
+
+```{r}
+hero_stats <- read.csv("datasets_38396_60978_charcters_stats.csv")
+head(hero_stats, 20)
+```
+Seems to be some null-type columns where the hero name and alignment was entered, but no relevant stats. These seem to be consistently defaulting to 1 for everything but power, and give a total of 5. Looking at it more closely:
+
+```{r}
+null_heros <- hero_stats %>% filter(Total == 5)
+print(nrow(null_heros))
+head(null_heros)
+```
+
+Yeah, there's a bunch of null values, these are uninformative and will actively hurt the model so let's remove 
+While we're out it let's remove the heroes that have no Alignment tag.
+
+```{r}
+hero_stats <- hero_stats %>% filter(Total != 5)
+cleaned_heroes <- hero_stats %>% filter(Alignment == "good" | Alignment == "bad")
+
+
+```
+
+
+2.  Perform a principal component analysis on the numerical columns of
+    this data. How many components do we need to get 85% of the
+    variation in the data set?
+    
+See below; without normalization and including Totals the first PC is responsible for the vast majority of variance. In this case, looks like only 1 PC is needed to get 85%.
+
+3.  Do we need to normalize these columns or not?
+
+We should, because since PCA relies on the variance of linear combinations of features, if the variance of one feature is vastly different than the rest then it will always be the most explanatory. Normalizing makes it so that all features are at the same "scale" of variance, and that the linear combination is not dependent on a single feature. See below for how it affects the scree plot.
+    
+```{r}
+pca.fit <- prcomp(cleaned_heroes[,3:ncol(cleaned_heroes)])
+fviz_screeplot(pca.fit, title="Hero PCA Including Total, Non-normalized")
+
+pca.fit.norm <- prcomp(scale(cleaned_heroes[,3:ncol(cleaned_heroes)]))
+fviz_screeplot(pca.fit.norm, title="Hero PCA Including Totals, Normalized")
+
+```
+    
+4.  Is the "total" column really the total of the values in the other
+    columns?
+
+Let's check:
+```{r}
+print(nrow(cleaned_heroes[cleaned_heroes$Total != rowSums(cleaned_heroes[,4:ncol(cleaned_heroes)-1]),]))
+print(nrow(cleaned_heroes[cleaned_heroes$Total == rowSums(cleaned_heroes[,4:ncol(cleaned_heroes)-1]),]))
+```
