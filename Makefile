@@ -118,3 +118,10 @@ Mushroom_analysis.pdf: assets/class_props.png \
 
 homework4:
 	Rscript -e "rmarkdown::render('homeworks/homework4.rmd', 'pdf_document')"
+
+#Was going to make this separated but I dont want to split the Rmd up
+#technically python script product should be separate target
+homework5: homeworks/datasets_26073_33239_weight-height.csv \
+			homeworks/datasets_38396_60978_charcters_stats.csv
+	Rscript -e "rmarkdown::render('homeworks/homework5.rmd', 'pdf_document')"
+
