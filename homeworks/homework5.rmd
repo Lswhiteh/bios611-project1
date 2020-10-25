@@ -1,3 +1,4 @@
+
 # Table of Contents
 
 1.  [Q1](#org0f04966)
@@ -121,3 +122,162 @@ Let's check:
 print(nrow(cleaned_heroes[cleaned_heroes$Total != rowSums(cleaned_heroes[,4:ncol(cleaned_heroes)-1]),]))
 print(nrow(cleaned_heroes[cleaned_heroes$Total == rowSums(cleaned_heroes[,4:ncol(cleaned_heroes)-1]),]))
 ```
+
+Yep, totals are the equal of all other features.
+
+5.  Should we have included it in the PCA? What do you expect
+    about the largest principal components and the total column?
+    Remember, a given principal component corresponds to a weighted
+    combination of the original variables.
+    
+We shouldn't include it, if it's already the combination of all the other variables it's just replicating the combinations with extra noise, and likely reducing the quality of the PCA.
+
+```{r}
+scaled.data <- data.frame(scale(cleaned_heroes[,4:ncol(hero_stats)-1]))
+
+pca.fit.norm.notot <- prcomp(scaled.data)
+fviz_screeplot(pca.fit.norm.notot, title="Hero PCA Not Including Totals, Normalized")
+
+#Write to csv for python analysis
+out.data <- cbind(cleaned_heroes$Name, cleaned_heroes$Alignment, scaled.data)
+write.csv(out.data, 'tsne_input.csv', row.names = FALSE)
+```
+
+
+    
+6.  Make a plot of the two largest components. Any insights?
+
+```{r}
+fviz_pca(pca.fit.norm.notot, geom="point")
+          
+```
+
+Much more dispersion along Dimension 1, which we would expect given that it explains a greater amount of variance than Dim2. The right side of Dim1 seems more dispered
+
+
+
+<a id="org51a4194"></a>
+
+# Q3
+
+Use Python/sklearn to perform a TSNE dimensionality reduction (to two
+dimensions) on the numerical columns from the set above. You'll need
+lines like this in your Dockerfile:
+
+    RUN apt update -y && apt install -y python3-pip
+    RUN pip3 install jupyter jupyterlab
+    RUN pip3 install numpy pandas sklearn plotnine matplotlib pandasql bokeh
+
+Once you've performed the analysis in Python (feel free to use a
+Python notebook) write the results to a csv file and load them into
+R. In R, plot the results.
+
+Color each point by the alignment of the associated character. Any
+insights?
+
+Code for both doing TSNE and plotting (using seaborn instead of plotnine):
+
+```{r}
+system("python3 tsne.py")
+```
+
+Code for plotting in R
+
+```{r}
+tsne.res <- read.csv('t_sne_results.csv')
+
+ggplot(tsne.res, aes(x=tsne_1, y=tsne_2, color=Alignment)) + geom_point()
+```
+
+
+
+See the aliases file in Lecture 16 for how to launch your Jupyter Lab.
+
+<a id="org61f5d14"></a>
+
+# Q4
+
+Reproduce your plot in Python with plotnine (or the library of your
+choice).
+
+
+
+Seaborn plot:
+![Python tsne](snsplot.png)
+A lot of the good characters form little clusters, but there's nothing major that I'm seeing here. 
+
+<a id="orgb73f6b4"></a>
+
+# Q5
+
+Using the Caret library, train a GBM model which attempts to predict
+character alignment. What are the final parameters that caret
+determines are best for the model.
+
+Hints: you want to use the "train" method with the "gbm" method. Use
+"repeatedcv" for the characterization method. If this is confusing,
+don't forget to read the Caret docs.
+
+```{r}
+
+cleaned_heroes$Alignment <- as.factor(cleaned_heroes$Alignment)
+
+#cleaned_heroes <- cleaned_heroes %>% select(-Total)
+traininds <- sort(sample(nrow(cleaned_heroes), nrow(cleaned_heroes)*.7))
+
+train.data <- cleaned_heroes[traininds,]
+test.data <- cleaned_heroes[-traininds,]
+
+trainControl <- trainControl(method="repeatedcv", 
+                             number=10, 
+                             repeats=5,
+                             classProbs=TRUE)
+
+trim.data <- train.data[,2:ncol(train.data)]
+
+fit.gbm <- train(Alignment ~ .,
+                 data=trim.data,
+                 method="gbm",
+                 trControl=trainControl,
+                 metric="Accuracy",
+                 verbose=FALSE)
+
+#Print final parameterizations
+print("Final Parameters")
+fit.gbm
+
+cat("\n")
+cat("-----------------")
+cat("\n")
+
+#summary(fit.model)
+
+test.data$gbmProb <- predict(fit.gbm, test.data, type="prob")
+test.data$gbmPred[test.data$gbmProb$bad > 0.5] = "bad"
+test.data$gbmPred[test.data$gbmProb$good > 0.5] = "good"
+
+caret::confusionMatrix(as.factor(test.data$Alignment), as.factor(test.data$gbmPred))
+
+
+```
+
+The final values used for the model were n.trees = 50, interaction.depth = 2, shrinkage = 0.1 and n.minobsinnode = 10.
+
+
+<a id="org870b507"></a>
+
+# Q6
+
+A conceptual question: why do we need to characterize our models using
+strategies like k-fold cross validation? Why can't we just report a
+single number for the accuracy of our model?
+
+If the model is not very "stable", it could randomly do well on a single subset of testing data but not the others. By repeatedly training/testing on different data we ensure that the model is both learning and testing consistently across any subset of the data, generalizing better by doing so.
+
+<a id="orge0cfd1d"></a>
+
+# Q7
+
+Describe in words the process of recursive feature elimination. 
+
+Essentially you train a model multiple times, each of those times removing a feature from the dataset. When done in an iterative fashion it could feasibly give all possible combinations of features in the dataset, allowing you to learn what features are actually informative and how much/in what combination they affect the predictive power.
