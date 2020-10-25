@@ -18,30 +18,53 @@ The dataset we're using is found [on Kaggle and is publicly available.](https://
 
 ### Installation and Running
 
-To install:
+To get reports (the easy way):
+```{bash}
+git clone https://github.com/Lswhiteh/bios611-project1
+source activate aliases.sh
+
+#Build
+dbuild
+
+#Run bash terminal through Docker image
+b
+
+#or
+
+#Run Rstudio through Docker image
+r
+```
+
+If using Rstudio:
+- Open a web browser to http://localhost:8787
+- Username: rstudio
+- Password: \<your linux user password>
+
+
+To get reports (the hard way):
 
 ```{bash}
 git clone https://github.com/Lswhiteh/bios611-project1
+
 #Build 
 docker build -f Dockerfile . --tag rcon
 
 #Run
-docker run -e PASSWORD=a -p 8787:8787 -v ~/bios611-project1:/home/rstudio/ rcon
+docker run -v `pwd`:/home/rstudio -e PASSWORD=not_important -it rcon sudo -H -u rstudio /bin/bash -c "cd ~/; /bin/bash"
 ```
 
-- Open a web browser to `http://localhost:8787`
-    - Username: `rstudio`
-    - Password: `<your linux user password>`
-
-In the terminal:
+Regardless how you get there, you can generate the project 1 report by going to a bash terminal and:
 
 ```{bash}
-make all
+make Mushroom_analysis.pdf
 ```
 
 And that's it! There should be a pdf called "Mushroom_analysis.pdf" in the base project directory with the completed writeup/figures.
 
 ---
 
-## Homework 1
+## Homework 4
 Simply `make homework4` and the homework4.pdf will be in the base homeworks directory.
+
+## Homework 5
+Simply `make homework5` and the homework5.pdf will be in the base homeworks directory.
