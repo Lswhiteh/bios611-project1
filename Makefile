@@ -1,4 +1,4 @@
-.PHONY: clean
+.PHONY: clean shiny
 
 clean:
 	rm -f derived_data/*
@@ -11,17 +11,9 @@ nuke:
 	rm -f assets/*
 	rm *Rplots*
 
-all: assets/category_options.png\
-		assets/conf_mat_odor.png\
-		assets/conf_mat_no_odor.png\
-		assets/all_samps_mca_class.png\
-		assets/all_samps_kmeans.png\
-		assets/poisonous_mca_scree.png\
-		assets/poisonous_mca_inds.png\
-		assets/poisonous_kmeans_3clust.png\
-		assets/edible_mca_scree.png\
-		assets/edible_mca_inds.png\
-		Mushroom_analysis.pdf
+shiny:
+	rm -f *pdf
+	Rscript shinyapp.r ${PORT}
 
 # Category analysis and decision tree 
 figures/category_options.png:

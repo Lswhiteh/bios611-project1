@@ -11,7 +11,9 @@ RUN R -e "install.packages(c('janitor', \
     'factoextra', \
     'gbm', \
     'caret', \
-    'ROCR'))"
+    'ROCR', \
+    'shiny', \
+    'plotly'))"
 RUN apt-get update
 RUN apt update -y && apt install -y python3-pip
 RUN pip3 install jupyter jupyterlab
