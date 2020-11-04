@@ -1,54 +1,97 @@
-# Define UI for app that draws a histogram ----
-ui <- fluidPage(
+library(tidyverse)
+library(plotly)
+library(shiny)
+library(klaR)
+library(FactoMineR)
+library(factoextra)
+source('utils.r')
+set.seed(42)
 
-  # App title ----
-  titlePanel("Hello Shiny!"),
+mushrooms <- get_cleaned_mushroom_data()
 
-  # Sidebar layout with input and output definitions ----
-  sidebarLayout(
+args <- commandArgs(trailingOnly=T)
+port <- as.numeric(args[[1]])
 
-    # Sidebar panel for inputs ----
-    sidebarPanel(
-
-      # Input: Slider for the number of bins ----
-      sliderInput(inputId = "bins",
-                  label = "Number of bins:",
-                  min = 1,
-                  max = 50,
-                  value = 30)
-
+ui <- navbarPage(
+    tabPanel("All Samples",
+        sidebarLayout(
+            sidebarPanel("How does adjusting the number of k-means affect an MCA clustering 1?\n",
+                        selectInput(inputId="all_k",
+                                    label="Number of K means:",
+                                    choices=c(1:10),
+                                    selected=1)
+            ),
+            mainPanel(
+                plotlyOutput("kmeans_all")
+            )
+        )
     ),
 
-    # Main panel for displaying outputs ----
-    mainPanel(
+    tabPanel("Edible Mushroom Samples",
+        sidebarLayout(
+            sidebarPanel("How does adjusting the number of k-means affect an MCA clustering 2?\n",
+                        selectInput(inputId="edible_k",
+                                    label="Number of K means:",
+                                    choices=c(1:10),
+                                    selected=1)
+            ),
+            mainPanel(
+                plotlyOutput("kmeans_edible")
+            )
+        )
+  ),
 
-      # Output: Histogram ----
-      plotOutput(outputId = "distPlot")
-
+    tabPanel("Poisonous Mushroom Samples",
+        sidebarLayout(
+            sidebarPanel("How does adjusting the number of k-means affect an MCA clustering 3?\n",
+                        selectInput(inputId="poisonous_k",
+                                    label="Number of K means:",
+                                    choices=c(1:10),
+                                    selected=1)
+            ),
+            mainPanel(
+            plotlyOutput("kmeans_poisonous")
+            )
+        )
     )
-  )
 )
 
-# Define server logic required to draw a histogram ----
 server <- function(input, output) {
+    
 
-  # Histogram of the Old Faithful Geyser Data ----
-  # with requested number of bins
-  # This expression that generates a histogram is wrapped in a call
-  # to renderPlot to indicate that:
-  #
-  # 1. It is "reactive" and therefore should be automatically
-  #    re-executed when inputs (input$bins) change
-  # 2. Its output type is a plot
-  output$distPlot <- renderPlot({
+    output$kmeans_all <- renderPlotly({
+        mush_mca <- MCA(mushrooms[,2:ncol(mushrooms)])
+        mush_kmeans <- kmeans(mush_mca$ind$coord, input$all_k)
 
-    x    <- faithful$waiting
-    bins <- seq(min(x), max(x), length.out = input$bins + 1)
-
-    hist(x, breaks = bins, col = "#75AADB", border = "white",
-         xlab = "Waiting time to next eruption (in mins)",
-         main = "Histogram of waiting times")
-
+        fviz_cluster(mush_kmeans, 
+                    mush_mca$ind$coord,
+                    title=paste("All Samples Kmeans Clustered with", input$all_k, "Clusters"),
+                    geom="point",
+                    label=mushrooms$class)
     })
 
+    output$kmeans_edible <- renderPlotly({
+        edibles_mca <- MCA(mushrooms[class=="e",2:ncol(mushrooms)])
+        edibles_kmeans <- kmeans(edibles_mca$ind$coord, input$edible_k)
+
+        fviz_cluster(edibles_kmeans, 
+                    edibles_mca$ind$coord,
+                    title=paste("Edible Samples Kmeans Clustered with", input$edible_k, "Clusters"),
+                    geom="point",
+                    label=mushrooms$class)
+    })
+
+    output$kmeans_poisonous <- renderPlotly({
+        poisonous_mca <- MCA(mushrooms[class=="p",2:ncol(mushrooms)])
+        poisonous_kmeans <- kmeans(poisonous_mca$ind$coord, input$poisonous_k)
+
+        fviz_cluster(poisonous_kmeans, 
+                    poisonous_mca$ind$coord,
+                    title=paste("Poisonous Samples Kmeans Clustered with", input$poisonous_k, "Clusters"),
+                    geom="point",
+                    label=mushrooms$class)
+    })
 }
+
+print(sprintf("Starting shiny on port %d", port))
+shinyApp(ui=ui, server=server, options=list(port=port, host="0.0.0.0"))
