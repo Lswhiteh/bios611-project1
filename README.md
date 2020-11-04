@@ -24,15 +24,15 @@ git clone https://github.com/Lswhiteh/bios611-project1
 source activate aliases.sh
 
 #Build
-dbuild
+$ dbuild
 
 #Run bash terminal through Docker image
-b
+$ b
 
 #or
 
 #Run Rstudio through Docker image
-r
+$ r
 ```
 
 If using Rstudio:
@@ -44,27 +44,38 @@ If using Rstudio:
 To get reports (the hard way):
 
 ```{bash}
-git clone https://github.com/Lswhiteh/bios611-project1
+$ git clone https://github.com/Lswhiteh/bios611-project1
 
 #Build 
-docker build -f Dockerfile . --tag rcon
+$ docker build -f Dockerfile . --tag rcon
 
 #Run
-docker run -v `pwd`:/home/rstudio -e PASSWORD=not_important -it rcon sudo -H -u rstudio /bin/bash -c "cd ~/; /bin/bash"
+$ docker run -v `pwd`:/home/rstudio -e PASSWORD=not_important -it rcon sudo -H -u rstudio /bin/bash -c "cd ~/; /bin/bash"
 ```
 
 Regardless how you get there, you can generate the project 1 report by going to a bash terminal and:
 
 ```{bash}
-make Mushroom_analysis.pdf
+$ make Mushroom_analysis.pdf
 ```
 
 And that's it! There should be a pdf called "Mushroom_analysis.pdf" in the base project directory with the completed writeup/figures.
 
 ---
 
+## Shiny app
+
+```{bash}
+#After sourcing aliases.sh
+$ shiny
+```
+
+Go to `http://0.0.0.0:8788` in your web browser.
+
+---
+
 ## Homework 4
-Simply `make homework4` and the homework4.pdf will be in the base homeworks directory.
+Simply `$ make homework4` and the homework4.pdf will be in the base homeworks directory.
 
 ## Homework 5
-Simply `make homework5` and the homework5.pdf will be in the base homeworks directory.
+Simply `$ make homework5` and the homework5.pdf will be in the base homeworks directory.
