@@ -13,7 +13,6 @@ nuke:
 
 # Project 2
 shiny:
-	rm -f *pdf
 	Rscript shinyapp.r ${PORT}
 
 # Project 1
