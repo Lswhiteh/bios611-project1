@@ -1,6 +1,9 @@
 import os
 import shutil
 from glob import glob
+from sklearn.model_selection import train_test_split
+from tensorflow.keras.callbacks import EarlyStopping, ModelCheckpoint, ReduceLROnPlateau
+from tensorflow.keras.preprocessing.image import ImageDataGenerator
 
 def prep_dirs(base_dir, working_dir):
     """
@@ -66,4 +69,56 @@ def split_dir_samples(base_dir, working_dir):
                 test_file,
                 os.path.join(working_dir, "test", os.path.split(test_file)[-1]),
             )
+
+
+def create_image_generators(base_dir):
+    """
+    Creates ImageDataGenerators using flow_from_directory for \
+        each partition of image data.
+
+    Args:
+        base_dir (str): Base directory with mushroom species subdirs.
+
+    Returns:
+        [ImageDataGenerators]: Train, val, test data generators \
+            to use when fitting model.
+    """
+    train_datagen = ImageDataGenerator(
+        rescale=1.0 / 255, shear_range=0.2, zoom_range=0.2, horizontal_flip=True
+    )
+    val_datagen = ImageDataGenerator(
+        rescale=1.0 / 255, shear_range=0.2, zoom_range=0.2, horizontal_flip=True
+    )
+    test_datagen = ImageDataGenerator(rescale=1.0 / 255)
+
+    train_gen = train_datagen.flow_from_directory(
+        directory=os.path.join(base_dir, "train"),
+        target_size=(255, 255),
+        color_mode="rgb",
+        class_mode="categorical",
+        shuffle=True,
+        seed=42,
+    )
+
+    val_gen = val_datagen.flow_from_directory(
+        directory=os.path.join(base_dir, "val"),
+        target_size=(255, 255),
+        color_mode="rgb",
+        class_mode="categorical",
+        shuffle=True,
+        seed=42,
+    )
+
+    test_gen = test_datagen.flow_from_directory(
+        directory=os.path.join(base_dir, "test"),
+        target_size=(255, 255),
+        color_mode="rgb",
+        batch_size=1,
+        class_mode="categorical",
+        shuffle=False,
+        seed=42,
+    )
+
+    return [train_gen, val_gen, test_gen]
+
 
