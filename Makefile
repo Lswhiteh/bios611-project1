@@ -15,6 +15,17 @@ nuke:
 shiny:
 	Rscript shinyapp.r ${PORT}
 
+# Project 3
+polyglot: derived_data/heatmap_confmat.png
+	cp derived_data/heatmap_confmat.png assets/heatmap_confmat.png
+	cp -f derived_data/Mushrooms/Mushrooms\ CNN_training.png assets/Mushrooms_CNN_training.png
+
+derived_data/heatmap_confmat.png: model_predictions.csv
+	Rscript prediction_analysis.R
+
+model_predictions.csv:
+	python3 nn.py
+
 # Project 1
 # Category analysis and decision tree 
 figures/category_options.png:
@@ -84,10 +95,10 @@ assets/edible_mca_inds.png: figures/edible_mca_inds.png
 assets/edible_kmeans.png: figures/edible_kmeans.png
 	cp figures/edible_kmeans.png assets/edible_kmeans.png	
 
-Mushroom_analysis.pdf: assets/class_props.png \
-						assets/category_options.png \
+Mushroom_analysis.pdf: 	assets/category_options.png \
 						assets/conf_mat_odor.png \
 						assets/conf_mat_no_odor.png \
+						assets/all_samps_mca_class.png \
 						assets/all_samps_mca_scree.png \
 						assets/all_samps_kmeans.png \
 						assets/all_samps_mca_cos2.png \
@@ -97,9 +108,10 @@ Mushroom_analysis.pdf: assets/class_props.png \
 						assets/poisonous_kmeans_3clust.png \
 						assets/edible_mca_scree.png \
 						assets/edible_mca_inds.png \
-						assets/edible_kmeans.png 
+						assets/edible_kmeans.png \
+						polyglot
 	Rscript -e "rmarkdown::render('Mushroom_analysis.Rmd', 'pdf_document')"
-
+	rm Rplots*
 #Homeworks
 homework4:
 	Rscript -e "rmarkdown::render('homeworks/homework4.rmd', 'pdf_document')"
