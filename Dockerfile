@@ -13,7 +13,8 @@ RUN R -e "install.packages(c('janitor', \
     'caret', \
     'ROCR', \
     'shiny', \
-    'plotly'))"
+    'plotly', \
+    'yardstick'))"
 RUN apt-get update
 RUN apt update -y && apt install -y python3-pip
 RUN pip3 install pandas scikit-learn seaborn matplotlib numpy==1.16.0 tensorflow
