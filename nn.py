@@ -1,6 +1,8 @@
 import os
 import shutil
 from glob import glob
+import csv
+
 from sklearn.model_selection import train_test_split
 from tensorflow.keras.callbacks import EarlyStopping, ModelCheckpoint, ReduceLROnPlateau
 from tensorflow.keras.layers import (
@@ -12,6 +14,9 @@ from tensorflow.keras.layers import (
 )
 from tensorflow.keras.models import Model
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
+
+import plotting_utils as pu
+
 
 def prep_dirs(base_dir, working_dir):
     """
@@ -229,4 +234,41 @@ def train_model(model, generators, callbacks):
     print("Evaluation accuracy:", score[1])
 
     return model, history
+
+
+def test_model(model, generators, base_dir):
+    """
+    Tests model on unseen data and plots accuracy metrics.
+    Writes true values and predicted values to file.
+
+    Args:
+        model (Keras Model): Trained Keras Model.
+        generators ([ImageDataGenerators]): List of streaming generators.
+        base_dir (str): Base directory with mushroom species subdirs.
+    """
+    _, _, test_gen = generators
+    predictions = model.predict(test_gen)
+    preds = predictions.argmax(axis=-1)
+    true_labs = test_gen.class_indices
+
+    conf_mat = pu.print_confusion_matrix(true_labs, preds)
+    mush_list = [
+        "Agaricus",
+        "Amanita",
+        "Boletus",
+        "Entoloma",
+        "Hygrocybe",
+        "Lactarius",
+        "Russula",
+        "Suillus",
+    ]
+    pu.plot_confusion_matrix(base_dir, conf_mat, mush_list, "Mushroom CNN")
+
+    pu.print_classification_report(true_labs, preds)
+
+    with open("model_predictions.csv", "w") as outfile:
+        writ = csv.writer(outfile)
+        for i, j in zip(true_labs, preds):
+            writ.writerow((i, j))
+
 
