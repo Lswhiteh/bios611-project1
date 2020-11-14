@@ -16,6 +16,7 @@ from tensorflow.keras.layers import (
     Input,
     Flatten,
     MaxPooling2D,
+    Dropout,
 )
 from tensorflow.keras.models import Model
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
@@ -152,17 +153,18 @@ def create_model():
     # conv_block_1 = MaxPooling2D((2, 2))(conv_block_1)
     # conv_block_1 = BatchNormalization()(conv_block_1)
 
-    conv_block_2 = Conv2D(64, 3, activation="relu")(in_layer)
-    conv_block_2 = MaxPooling2D((2, 2))(conv_block_2)
-    conv_block_2 = BatchNormalization()(conv_block_2)
+    # conv_block_2 = Conv2D(64, 3, activation="relu")(in_layer)
+    # conv_block_2 = MaxPooling2D((2, 2))(conv_block_2)
+    # conv_block_2 = BatchNormalization()(conv_block_2)
 
-    conv_block_3 = Conv2D(32, 3, activation="relu")(conv_block_2)
+    conv_block_3 = Conv2D(32, 3, activation="relu")(in_layer)
     conv_block_3 = MaxPooling2D((2, 2))(conv_block_3)
     conv_block_3 = BatchNormalization()(conv_block_3)
 
     flat = Flatten()(conv_block_3)
 
     dense_block = Dense(128, activation="relu")(flat)
+    dense_block = Dropout(0.3)(dense_block)
     dense_block = Dense(9, activation="softmax")(dense_block)
 
     cnn_model = Model(inputs=in_layer, outputs=dense_block, name="Mushroom_CNN")
