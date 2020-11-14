@@ -17,3 +17,5 @@ derived_data/
 *.json
 .python_history
 *.pyc
+assets/*
+figures/*
