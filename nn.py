@@ -52,9 +52,7 @@ def split_dir_samples(base_dir, working_dir):
 
     """
     for class_dir in glob(base_dir + "/*"):
-        print(class_dir)
         raw_files = glob(class_dir + "/*")
-        # print(raw_files)
         X_train, X_val = train_test_split(raw_files, test_size=0.3)
         X_val, X_test = train_test_split(X_val, test_size=0.5)
 
@@ -145,11 +143,12 @@ def create_model():
     """
     in_layer = Input((100, 100, 3))
 
-    conv_block_1 = Conv2D(128, 3, activation="relu")(in_layer)
-    conv_block_1 = MaxPooling2D((2, 2))(conv_block_1)
-    conv_block_1 = BatchNormalization()(conv_block_1)
+    # Taking this out for now, don't want to set up GPU
+    # conv_block_1 = Conv2D(128, 3, activation="relu")(in_layer)
+    # conv_block_1 = MaxPooling2D((2, 2))(conv_block_1)
+    # conv_block_1 = BatchNormalization()(conv_block_1)
 
-    conv_block_2 = Conv2D(64, 3, activation="relu")(conv_block_1)
+    conv_block_2 = Conv2D(64, 3, activation="relu")(in_layer)
     conv_block_2 = MaxPooling2D((2, 2))(conv_block_2)
     conv_block_2 = BatchNormalization()(conv_block_2)
 
@@ -226,10 +225,9 @@ def train_model(model, generators, callbacks):
     history = model.fit(
         train_gen,
         validation_data=val_gen,
-        steps_per_epoch=train_gen.n // 32,
-        validation_steps=val_gen.n // 32,
         epochs=40,
         callbacks=callbacks,
+        batch_size=32,
     )
 
     score = model.evaluate(val_gen)
