@@ -284,18 +284,22 @@ def test_model(model, generators, base_dir):
 def main():
     source_dir = "source_data/Mushrooms"
     working_dir = "derived_data/Mushrooms"
-    if not os.path.exists(working_dir):
-        os.makedirs(working_dir)
 
-    prep_dirs(source_dir, working_dir)
-    split_dir_samples(source_dir, working_dir)
+    if not os.path.exists(os.path.join(working_dir, "train")):
+        prep_dirs(source_dir, working_dir)
+        split_dir_samples(source_dir, working_dir)
 
     generators = create_image_generators(working_dir)
-    callbacks = create_callbacks(working_dir)
-    model = create_model()
 
-    trained_model, history = train_model(model, generators, callbacks)
-    pu.plot_training(working_dir, history, "Mushrooms CNN")
+    if not os.path.exists(os.path.join(working_dir, "Mushrooms.model")):
+        callbacks = create_callbacks(working_dir)
+        model = create_model()
+
+        trained_model, history = train_model(model, generators, callbacks)
+        pu.plot_training(working_dir, history, "Mushrooms CNN")
+
+    else:
+        trained_model = load_model(os.path.join(working_dir, "Mushrooms.model"))
 
     test_model(trained_model, generators, working_dir)
 
