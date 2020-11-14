@@ -41,9 +41,7 @@ def prep_dirs(base_dir, working_dir):
         ):
             os.makedirs(os.path.join(working_dir, "train", os.path.split(dir)[-1]))
             os.makedirs(os.path.join(working_dir, "val", os.path.split(dir)[-1]))
-
-    if not os.path.exists(os.path.join(working_dir, "test")):
-        os.makedirs(os.path.join(working_dir, "test"))
+            os.makedirs(os.path.join(working_dir, "test", os.path.split(dir)[-1]))
 
 
 def split_dir_samples(base_dir, working_dir):
@@ -71,6 +69,7 @@ def split_dir_samples(base_dir, working_dir):
                     os.path.split(train_file)[-1],
                 ),
             )
+
         for val_file in X_val:
             shutil.copy(
                 val_file,
@@ -81,10 +80,16 @@ def split_dir_samples(base_dir, working_dir):
                     os.path.split(val_file)[-1],
                 ),
             )
+
         for test_file in X_test:
             shutil.copy(
                 test_file,
-                os.path.join(working_dir, "test", os.path.split(test_file)[-1]),
+                os.path.join(
+                    working_dir,
+                    "test",
+                    os.path.split(class_dir)[-1],
+                    os.path.split(test_file)[-1],
+                ),
             )
 
 
@@ -130,8 +135,8 @@ def create_image_generators(base_dir):
         directory=os.path.join(base_dir, "test"),
         target_size=(100, 100),
         color_mode="rgb",
-        batch_size=1,
         class_mode="categorical",
+        batch_size=1,
         shuffle=False,
         seed=42,
     )
@@ -253,30 +258,27 @@ def test_model(model, generators, base_dir):
         generators ([ImageDataGenerators]): List of streaming generators.
         base_dir (str): Base directory with mushroom species subdirs.
     """
-    _, _, test_gen = generators
+    _1, _2, test_gen = generators
+    mush_dict = {v: k for k, v in test_gen.class_indices.items()}
+
     predictions = model.predict(test_gen)
     preds = predictions.argmax(axis=-1)
-    true_labs = test_gen.class_indices
+
+    true_labs = test_gen.labels
+    genus_labs = [mush_dict[i] for i in true_labs]
 
     conf_mat = pu.print_confusion_matrix(true_labs, preds)
-    mush_list = [
-        "Agaricus",
-        "Amanita",
-        "Boletus",
-        "Entoloma",
-        "Hygrocybe",
-        "Lactarius",
-        "Russula",
-        "Suillus",
-    ]
-    pu.plot_confusion_matrix(base_dir, conf_mat, mush_list, "Mushroom CNN")
+
+    pu.plot_confusion_matrix(
+        base_dir, conf_mat, list(mush_dict.values()), "Mushroom CNN"
+    )
 
     pu.print_classification_report(true_labs, preds)
 
     with open("model_predictions.csv", "w") as outfile:
         writ = csv.writer(outfile)
-        for i, j in zip(true_labs, preds):
-            writ.writerow((i, j))
+        for i, j, k in zip(genus_labs, true_labs, preds):
+            writ.writerow((i, j, k))
 
 
 def main():
