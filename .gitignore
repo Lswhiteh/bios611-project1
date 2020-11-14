@@ -16,3 +16,4 @@ derived_data/
 *tex
 *.json
 .python_history
+*.pyc
