@@ -12,11 +12,17 @@ Mushrooms are a fungi that are commonly used in food and sometimes for medicinal
 
 This project aims to both explore what differentiates mushroom types/subtypes and create the most lightweight model possible for accurately discriminating edible from poisonous mushrooms given a fairly limited dataset containing only categorical data.  
 
+The second part of this project is a CNN that classifies genus of mushroom images. It is built as an example of a polyglot analysis, with the neural network design and training done in python while the summary statistics on results are done in R.
+
 ### Datasets
 
-The dataset we're using is found [on Kaggle and is publicly available.](https://www.kaggle.com/uciml/mushroom-classification) It consists of quite a few aspects of mushrooms and associated pictures
+The dataset we're using is found [on Kaggle and is publicly available.](https://www.kaggle.com/uciml/mushroom-classification) It consists of quite a few aspects of mushrooms.
+
+The image dataset is found [also on Kaggle](https://www.kaggle.com/maysee/mushrooms-classification-common-genuss-images), and is around 2Gb consisting of a few thousand jpg images.
 
 ### Installation and Running
+
+All parts of the analysis (initial R and new polyglot) are included in the writeup now.
 
 To get reports (the easy way):
 ```{bash}
@@ -53,9 +59,10 @@ $ docker build -f Dockerfile . --tag rcon
 $ docker run -v `pwd`:/home/rstudio -e PASSWORD=not_important -it rcon sudo -H -u rstudio /bin/bash -c "cd ~/; /bin/bash"
 ```
 
-Regardless how you get there, you can generate the project 1 report by going to a bash terminal and:
+Regardless how you get there, you can generate the project 1 report by going to a bash terminal inside of the Docker container and:
 
 ```{bash}
+#WARNING: AFTER NEURAL NET UPDATE THIS WILL TAKE QUITE LONG
 $ make Mushroom_analysis.pdf
 ```
 
