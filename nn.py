@@ -248,7 +248,7 @@ def train_model(model, generators, callbacks):
     return model, history
 
 
-def test_model(model, generators, base_dir):
+def test_model(model, generators, working_dir):
     """
     Tests model on unseen data and plots accuracy metrics.
     Writes true values and predicted values to file.
@@ -256,7 +256,7 @@ def test_model(model, generators, base_dir):
     Args:
         model (Keras Model): Trained Keras Model.
         generators ([ImageDataGenerators]): List of streaming generators.
-        base_dir (str): Base directory with mushroom species subdirs.
+        working_dir (str): Base directory with mushroom species subdirs.
     """
     _1, _2, test_gen = generators
     mush_dict = {v: k for k, v in test_gen.class_indices.items()}
@@ -266,19 +266,20 @@ def test_model(model, generators, base_dir):
 
     true_labs = test_gen.labels
     genus_labs = [mush_dict[i] for i in true_labs]
+    pred_genus = [mush_dict[i] for i in preds]
 
     conf_mat = pu.print_confusion_matrix(true_labs, preds)
 
     pu.plot_confusion_matrix(
-        base_dir, conf_mat, list(mush_dict.values()), "Mushroom CNN"
+        working_dir, conf_mat, list(mush_dict.values()), "Mushroom CNN"
     )
 
     pu.print_classification_report(true_labs, preds)
 
-    with open("model_predictions.csv", "w") as outfile:
+    with open(os.path.join(working_dir, "model_predictions.csv"), "w") as outfile:
         writ = csv.writer(outfile)
-        for i, j, k in zip(genus_labs, true_labs, preds):
-            writ.writerow((i, j, k))
+        for i, j in zip(genus_labs, pred_genus):
+            writ.writerow((i, j))
 
 
 def main():
