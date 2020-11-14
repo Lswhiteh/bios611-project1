@@ -103,6 +103,8 @@ Using the scree plot for edible samples it would seem 4 clusters are appropriate
 ![](assets/edible_kmeans.png){width=50%, align="center"}
 </center>
 
+\newpage
+
 #### Poisonous Samples
 Interestingly, for the poisonous samples, most of them lay along one dimension with a few very highly Dimension 2-associated samples.
 
@@ -117,7 +119,25 @@ There's a large variance drop after 3 dimensions, so this was chosen as the K fo
 
 All things considered the ability to create a very lightweight supervised model using only categorical variables is great, but in terms of structures within the data MCA analysis and k-means was not sufficient to find anything interesting aside from some sub-groups within the poisonous mushrooms. It's not clear whether there just is no underlying structure or if this would require a stronger analysis, but these basic methods found nothing of interest. 
 
----
+\newpage
+
+## Polyglot Analysis
+In order to show off the utility of polyglot analysis and neural networks, I created a convolutional neural network in Python using Keras with the Tensorflow backend. The model is a 3-block CNN using a standard format of increasing filter sizes with each layer followed by MaxPooling and BatchNorm layers. Output is a 9-class softmax-activated dense layer, with predictions being classes having the highest probability reported by the output layer.
+
+Note: For performance/installation reasons, this model is NOT GPU-accelerated, and CUDNN is not required. This means that the model trains *extremely* slowly if I use the full-network, so it's been reduced to a single block, giving poor performance.
+
+The model training shows how the training and validation accuracy can differ. In this simplified model the training outpaces validation accuracy, demonstrating that the model is overfitting, something likely caused by an under-parameterized model.
+
+![Training graph](assets/Mushrooms_CNN_training.png)
+
+Usually I would do all of the performance characterization in Python, there's a lot of great packages that work very well with Keras models (and I did add in some of those plots if you're interested) but for the purposes of a polyglot analysis I made a confusion matrix in R using yardstick, a package for easy characterization and plotting. It's pretty easy to see that the model is performing TERRIBLY, but since it's such a small example this is unsurprising. Some things we could do to fix this would be increasing the amount of convolutional blocks, tuning hyperparemeters such as filter or step size, increasing/decreasing number of dense layers, and tuning how our images are loaded/augmented
+
+![Conf Mat](assets/heatmap_confmat.png)
+
+\newpage
+
+<br>
+<br>
 
 ## Appendix
 ### A - Dataset Labeling and Shorthand
