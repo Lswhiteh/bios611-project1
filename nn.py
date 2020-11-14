@@ -10,6 +10,7 @@ from tensorflow.keras.layers import (
     Conv2D,
     Dense,
     Input,
+    Flatten,
     MaxPooling2D,
 )
 from tensorflow.keras.models import Model
@@ -156,10 +157,12 @@ def create_model():
     conv_block_3 = MaxPooling2D((2, 2))(conv_block_3)
     conv_block_3 = BatchNormalization()(conv_block_3)
 
-    dense_block = Dense(128, activation="relu")(conv_block_3)
+    flat = Flatten()(conv_block_3)
+
+    dense_block = Dense(128, activation="relu")(flat)
     dense_block = Dense(9, activation="softmax")(dense_block)
 
-    cnn_model = Model(inputs=in_layer, outputs=dense_block, name="Mushroom CNN")
+    cnn_model = Model(inputs=in_layer, outputs=dense_block, name="Mushroom_CNN")
 
     cnn_model.compile(
         loss="categorical_crossentropy", optimizer="adam", metrics=["accuracy"]
@@ -221,7 +224,7 @@ def train_model(model, generators, callbacks):
     print(model.summary())
 
     history = model.fit(
-        training_data=train_gen,
+        train_gen,
         validation_data=val_gen,
         steps_per_epoch=train_gen.n // 32,
         validation_steps=val_gen.n // 32,
