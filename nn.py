@@ -98,16 +98,16 @@ def create_image_generators(base_dir):
             to use when fitting model.
     """
     train_datagen = ImageDataGenerator(
-        rescale=1.0 / 255, shear_range=0.2, zoom_range=0.2, horizontal_flip=True
+        rescale=1.0 / 100, shear_range=0.2, zoom_range=0.2, horizontal_flip=True
     )
     val_datagen = ImageDataGenerator(
-        rescale=1.0 / 255, shear_range=0.2, zoom_range=0.2, horizontal_flip=True
+        rescale=1.0 / 100, shear_range=0.2, zoom_range=0.2, horizontal_flip=True
     )
-    test_datagen = ImageDataGenerator(rescale=1.0 / 255)
+    test_datagen = ImageDataGenerator(rescale=1.0 / 100)
 
     train_gen = train_datagen.flow_from_directory(
         directory=os.path.join(base_dir, "train"),
-        target_size=(255, 255),
+        target_size=(100, 100),
         color_mode="rgb",
         class_mode="categorical",
         shuffle=True,
@@ -116,7 +116,7 @@ def create_image_generators(base_dir):
 
     val_gen = val_datagen.flow_from_directory(
         directory=os.path.join(base_dir, "val"),
-        target_size=(255, 255),
+        target_size=(100, 100),
         color_mode="rgb",
         class_mode="categorical",
         shuffle=True,
@@ -125,7 +125,7 @@ def create_image_generators(base_dir):
 
     test_gen = test_datagen.flow_from_directory(
         directory=os.path.join(base_dir, "test"),
-        target_size=(255, 255),
+        target_size=(100, 100),
         color_mode="rgb",
         batch_size=1,
         class_mode="categorical",
@@ -143,7 +143,7 @@ def create_model():
     Returns:
         Keras model: Compiled keras CNN model.
     """
-    in_layer = Input((255, 255, 3))
+    in_layer = Input((100, 100, 3))
 
     conv_block_1 = Conv2D(128, 3, activation="relu")(in_layer)
     conv_block_1 = MaxPooling2D((2, 2))(conv_block_1)
