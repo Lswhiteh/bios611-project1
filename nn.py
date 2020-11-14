@@ -3,6 +3,14 @@ import shutil
 from glob import glob
 from sklearn.model_selection import train_test_split
 from tensorflow.keras.callbacks import EarlyStopping, ModelCheckpoint, ReduceLROnPlateau
+from tensorflow.keras.layers import (
+    BatchNormalization,
+    Conv2D,
+    Dense,
+    Input,
+    MaxPooling2D,
+)
+from tensorflow.keras.models import Model
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
 
 def prep_dirs(base_dir, working_dir):
@@ -154,4 +162,71 @@ def create_model():
 
     return cnn_model
 
+
+def create_callbacks(base_dir):
+    """
+    Creates and returns callbacks for earlystopping and checkpointing.
+
+    Args:
+        base_dir (str): Base directory with mushroom species subdirs.
+
+    Returns:
+        [callbacks]: List of EarlyStopping, ModelCheckpoint, \
+            and LR reduction callbacks.
+    """
+    # Stop model early if acc stops increasing.
+    callback = EarlyStopping(
+        monitor="val_accuracy", patience=10, restore_best_weights=True
+    )
+
+    # Save model when new best is found.
+    checkpoint = ModelCheckpoint(
+        filepath=os.path.join(base_dir, "Mushrooms.model"),
+        save_best_only=True,
+        monitor="val_accuracy",
+        mode="max",
+    )
+
+    # Reduce learning rate if performance doesn't increase.
+    reduce_lr = ReduceLROnPlateau(
+        monitor="loss", factor=0.5, patience=10, min_lr=0.0001
+    )
+
+    callbacks = [reduce_lr, checkpoint, callback]
+
+    return callbacks
+
+
+def train_model(model, generators, callbacks):
+    """
+    Fits model using image generators with appropriate callbacks.
+
+    Args:
+        model (Keras Model): CNN Model
+        generators ([ImageDataGenerators]): List of train/val/test generators \
+            for streaming in images.
+        callbacks ([Keras callbacks]): List of Keras Callback functions \
+            for model utility during training.
+
+    Returns:
+        Keras Model: Trained Keras model on image data.
+        History: Keras history of trained model, used for plotting.
+    """
+    train_gen, val_gen, _ = generators
+    print(model.summary())
+
+    history = model.fit(
+        training_data=train_gen,
+        validation_data=val_gen,
+        steps_per_epoch=train_gen.n // 32,
+        validation_steps=val_gen.n // 32,
+        epochs=40,
+        callbacks=callbacks,
+    )
+
+    score = model.evaluate(val_gen)
+    print("Evaluation loss:", score[0])
+    print("Evaluation accuracy:", score[1])
+
+    return model, history
 
