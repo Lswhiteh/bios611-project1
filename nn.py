@@ -122,3 +122,36 @@ def create_image_generators(base_dir):
     return [train_gen, val_gen, test_gen]
 
 
+def create_model():
+    """
+    Creates basic 3-block CNN with softmax-activate Dense layer for output.
+
+    Returns:
+        Keras model: Compiled keras CNN model.
+    """
+    in_layer = Input((255, 255, 3))
+
+    conv_block_1 = Conv2D(128, 3, activation="relu")(in_layer)
+    conv_block_1 = MaxPooling2D((2, 2))(conv_block_1)
+    conv_block_1 = BatchNormalization()(conv_block_1)
+
+    conv_block_2 = Conv2D(64, 3, activation="relu")(conv_block_1)
+    conv_block_2 = MaxPooling2D((2, 2))(conv_block_2)
+    conv_block_2 = BatchNormalization()(conv_block_2)
+
+    conv_block_3 = Conv2D(32, 3, activation="relu")(conv_block_2)
+    conv_block_3 = MaxPooling2D((2, 2))(conv_block_3)
+    conv_block_3 = BatchNormalization()(conv_block_3)
+
+    dense_block = Dense(128, activation="relu")(conv_block_3)
+    dense_block = Dense(9, activation="softmax")(dense_block)
+
+    cnn_model = Model(inputs=in_layer, outputs=dense_block, name="Mushroom CNN")
+
+    cnn_model.compile(
+        loss="categorical_crossentropy", optimizer="adam", metrics=["accuracy"]
+    )
+
+    return cnn_model
+
+
