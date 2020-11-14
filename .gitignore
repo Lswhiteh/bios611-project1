@@ -15,3 +15,4 @@ derived_data/
 *pdf
 *tex
 *.json
+.python_history
