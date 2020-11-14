@@ -18,7 +18,7 @@ from tensorflow.keras.layers import (
     MaxPooling2D,
     Dropout,
 )
-from tensorflow.keras.models import Model
+from tensorflow.keras.models import Model, load_model
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
 
 import plotting_utils as pu
